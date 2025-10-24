@@ -2,20 +2,21 @@ using Microsoft.EntityFrameworkCore;
 using MockPremiumQuoteApi;
 
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var MyAllowSpecificOrigins = "_allowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MockPremiumQuoteDb>(opt => opt.UseInMemoryDatabase("QuoteList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+string? allowedHosts = builder.Configuration["AllowedHosts"];
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowSpecificOrigins,
                          policy =>
                          {
-                             policy.WithOrigins("http://localhost:61385")
+                             policy.WithOrigins(allowedHosts)
                                                  .AllowAnyHeader()
                                                  .AllowAnyMethod();
                          });
